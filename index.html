@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOTHダウンロードリンク抽出</title>
+</head>
+<body>
+    <h2>BOOTH購入履歴リンク抽出</h2>
+    <textarea id="htmlInput" placeholder="購入履歴ページのHTMLをここに貼り付けてください" rows="10" cols="50"></textarea>
+    <br>
+    <button onclick="extractLinks()">リンクを抽出</button>
+    <h3>抽出されたダウンロードリンク:</h3>
+    <ul id="linkList"></ul>
+
+    <script>
+        function extractLinks() {
+            const html = document.getElementById("htmlInput").value;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            const links = [];
+            doc.querySelectorAll("a").forEach(a => {
+                if (a.href.includes("download")) { // ダウンロードリンクを探す
+                    links.push(a.href);
+                }
+            });
+
+            const linkList = document.getElementById("linkList");
+            linkList.innerHTML = "";
+            links.forEach(link => {
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+                a.href = link;
+                a.textContent = link;
+                a.target = "_blank";
+                li.appendChild(a);
+                linkList.appendChild(li);
+            });
+
+            if (links.length === 0) {
+                linkList.innerHTML = "<li>ダウンロードリンクが見つかりませんでした</li>";
+            }
+        }
+    </script>
+</body>
+</html>
