@@ -13,9 +13,6 @@
     <h3>抽出されたダウンロードリンク:</h3>
     <ul id="linkList"></ul>
 
-    <!-- 一括ダウンロードボタン -->
-    <button onclick="downloadAllLinks()">Download All</button>
-
     <script>
         let links = []; // 抽出されたリンクを格納する配列
 
@@ -35,12 +32,13 @@
             const linkList = document.getElementById("linkList");
             linkList.innerHTML = ""; // 既存のリストをクリア
 
-            links.forEach(link => {
+            links.forEach((link, index) => {
                 const li = document.createElement("li");
                 const a = document.createElement("a");
                 a.href = link;
                 a.textContent = link;
                 a.target = "_blank";
+                a.onclick = () => handleDownload(a, index); // クリックしたらダウンロード処理を実行
                 li.appendChild(a);
                 linkList.appendChild(li);
             });
@@ -50,22 +48,23 @@
             }
         }
 
-        // 一括ダウンロード処理を行う関数
-        function downloadAllLinks() {
-            if (links.length === 0) {
-                alert("ダウンロードリンクがありません。まずリンクを抽出してください。");
-                return;
-            }
+        // ダウンロードリンクをクリックしたときの処理
+        function handleDownload(linkElement, index) {
+            // ダウンロードを実行
+            const downloadLink = linkElement.href;
+            const a = document.createElement('a');
+            a.href = downloadLink;
+            a.download = ''; // 自動的にファイル名を設定
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
 
-            // すべてのリンクを順番にダウンロード
-            links.forEach(link => {
-                let a = document.createElement('a');
-                a.href = link;
-                a.download = ''; // ファイル名は指定しない
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            });
+            // クリックしたリンクを削除して、リストを上にスクロール
+            linkElement.parentNode.removeChild(linkElement);
+
+            // 残りのリンクを上にスクロールさせる
+            const linkList = document.getElementById("linkList");
+            linkList.scrollTop = 0; // リストの上にスクロール
         }
     </script>
 </body>
