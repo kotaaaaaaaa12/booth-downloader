@@ -13,13 +13,19 @@
     <h3>抽出されたダウンロードリンク:</h3>
     <ul id="linkList"></ul>
 
+    <!-- 一括ダウンロードボタン -->
+    <button onclick="downloadAllLinks()">Download All</button>
+
     <script>
+        let links = []; // 抽出されたリンクを格納する配列
+
+        // リンクを抽出する関数
         function extractLinks() {
             const html = document.getElementById("htmlInput").value;
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
 
-            const links = [];
+            links = [];
             doc.querySelectorAll("a").forEach(a => {
                 if (a.href.includes("download")) { // ダウンロードリンクを探す
                     links.push(a.href);
@@ -27,7 +33,8 @@
             });
 
             const linkList = document.getElementById("linkList");
-            linkList.innerHTML = "";
+            linkList.innerHTML = ""; // 既存のリストをクリア
+
             links.forEach(link => {
                 const li = document.createElement("li");
                 const a = document.createElement("a");
@@ -41,6 +48,24 @@
             if (links.length === 0) {
                 linkList.innerHTML = "<li>ダウンロードリンクが見つかりませんでした</li>";
             }
+        }
+
+        // 一括ダウンロード処理を行う関数
+        function downloadAllLinks() {
+            if (links.length === 0) {
+                alert("ダウンロードリンクがありません。まずリンクを抽出してください。");
+                return;
+            }
+
+            // すべてのリンクを順番にダウンロード
+            links.forEach(link => {
+                let a = document.createElement('a');
+                a.href = link;
+                a.download = ''; // ファイル名は指定しない
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
         }
     </script>
 </body>
