@@ -37,7 +37,7 @@
                 const a = document.createElement("a");
                 a.href = link;
                 a.textContent = link;
-                a.target = "_blank";
+                a.target = "_self"; // サイト内で完結させるため変更
                 a.onclick = () => handleDownload(a, index); // クリックしたらダウンロード処理を実行
                 li.appendChild(a);
                 linkList.appendChild(li);
@@ -59,12 +59,8 @@
             a.click();
             document.body.removeChild(a);
 
-            // クリックしたリンクを削除して、リストを上にスクロール
+            // クリックしたリンクを削除
             linkElement.parentNode.removeChild(linkElement);
-
-            // 残りのリンクを上にスクロールさせる
-            const linkList = document.getElementById("linkList");
-            linkList.scrollTop = 0; // リストの上にスクロール
         }
     </script>
 </body>
